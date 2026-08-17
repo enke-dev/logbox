@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://enke-dev.github.io/logbox/logbox.schema.json",
+  "title": "logbox configuration",
+  "description": "Content of the box logbox pins below a wrapped command. Either bare rows or an object carrying a title.",
+  "oneOf": [{ "$ref": "#/$defs/rows" }, { "$ref": "#/$defs/config" }],
+  "$defs": {
+    "row": {
+      "title": "row",
+      "description": "One rendered line. The first cell is left aligned, the last one right aligned, connected by a dot leader. A single cell renders as a plain label.",
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "rows": {
+      "title": "rows",
+      "description": "All lines of the box, top to bottom.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/row" },
+      "examples": [
+        [
+          ["docs", "https://localhost:5173"],
+          ["components", "https://localhost:5174"]
+        ]
+      ]
+    },
+    "config": {
+      "title": "config",
+      "type": "object",
+      "properties": {
+        "$schema": {
+          "description": "Reference to this schema; ignored at runtime. A relative path works too.",
+          "type": "string",
+          "format": "uri-reference"
+        },
+        "title": {
+          "description": "Title rendered into the top border. Defaults to \"logbox\".",
+          "type": "string"
+        },
+        "content": { "$ref": "#/$defs/rows" }
+      },
+      "required": ["content"],
+      "additionalProperties": false
+    }
+  }
+}

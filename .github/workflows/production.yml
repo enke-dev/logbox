@@ -1,0 +1,113 @@
+name: production
+
+# Trunk based: every push to main cuts the npm `latest` release (semver derived from
+# the conventional commits since the last tag) and republishes the schema to Pages.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# serialize releases per ref: two pushes to main must not run release-it in parallel
+# (tag/version race, double publish). Don't cancel an in-flight release.
+concurrency:
+  group: production-${{ github.ref }}
+  cancel-in-progress: false
+
+# default for the reusable check call — check.yml writes a test report, and a
+# reusable workflow can't be granted more than its caller. The other jobs override.
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  check:
+    uses: ./.github/workflows/check.yml
+    secrets: inherit
+
+  release:
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    outputs:
+      commit: ${{ steps.commit.outputs.sha }}
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # check out the branch (not a detached HEAD) so release-it's push updates main
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version-file: package.json
+
+      - name: Configure npm auth
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+
+      # `bun install` runs `prepare` → builds dist/cli.mjs. npm re-runs `prepare` at
+      # publish/pack time too, so the tarball always carries the build.
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Configure git identity
+        run: |
+          git config user.name  "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+      # one run: bump, changelog, npm publish, push the tag, create the GitHub release.
+      # No-op when there are no releasable commits. The release commit is pushed with
+      # GITHUB_TOKEN, so it won't re-trigger this workflow.
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bunx -p release-it -p @release-it/conventional-changelog release-it --ci
+
+      - name: Resolve released commit
+        id: commit
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve released version
+        id: version
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "Released ${version} :rocket:" >> "$GITHUB_STEP_SUMMARY"
+
+  # publish the static landing page plus logbox.schema.json, so the `$schema` URL
+  # referenced from every .logbox.json resolves to the just-released schema
+  pages:
+    needs: release
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Check out released commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.release.outputs.commit }}
+
+      - name: Configure Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      # everything served is static and already laid out in site/ — nothing to assemble
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: site
+
+      - name: Deploy to Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+
+      - run: echo "Schema at ${{ steps.deployment.outputs.page_url }}logbox.schema.json" >> "$GITHUB_STEP_SUMMARY"

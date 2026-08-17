@@ -1,0 +1,8 @@
+{
+  "$schema": "./site/logbox.schema.json",
+  "title": "logbox",
+  "content": [
+    ["schema", "https://enke-dev.github.io/logbox/logbox.schema.json"],
+    ["repo", "https://github.com/enke-dev/logbox"]
+  ]
+}

@@ -1,0 +1,52 @@
+name: check
+
+on:
+  # PRs run it directly; production.yml reuses it ahead of the release
+  pull_request:
+    branches: [main]
+  workflow_call:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    name: check, lint & test
+    permissions:
+      contents: read
+      checks: write
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version-file: package.json
+
+      # the specs are runtime-agnostic and run under both runtimes
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+
+      # --ignore-scripts skips `prepare` (the build); the release job wants it, checks don't
+      - name: Install dependencies
+        run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Type check
+        run: bun run check
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Test
+        run: bun run test
+
+      - name: Publish test report
+        # run even when tests fail, so failures surface in the summary
+        if: ${{ !cancelled() }}
+        uses: mikepenz/action-junit-report@d9f48fc87bc235f7e214acf696ca5abc0a986f16 # v6.4.2
+        with:
+          report_paths: reports/junit.*.xml
+          check_name: test report
+          detailed_summary: true
+          include_passed: false

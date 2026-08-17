@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>logbox</title>
+    <meta
+      name="description"
+      content="Pin a configurable info box below a long-running command — and the JSON schema for its config."
+    >
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #fff;
+        --fg: #1b1f24;
+        --muted: #5b6672;
+        --line: #dfe3e8;
+        --code: #f4f6f8;
+        --link: #0b6bcb;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #11151a;
+          --fg: #e6edf3;
+          --muted: #9aa7b4;
+          --line: #262d35;
+          --code: #171d24;
+          --link: #6cb6ff;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0 auto;
+        padding: 3rem 1.25rem 5rem;
+        max-width: 46rem;
+        background: var(--bg);
+        color: var(--fg);
+        font:
+          16px/1.6 ui-sans-serif,
+          system-ui,
+          sans-serif;
+      }
+      h1 {
+        margin: 0 0 0.25rem;
+        font-size: 2rem;
+      }
+      h2 {
+        margin: 2.5rem 0 0.75rem;
+        padding-bottom: 0.35rem;
+        border-bottom: 1px solid var(--line);
+        font-size: 1.1rem;
+      }
+      p.lead {
+        margin: 0 0 2rem;
+        color: var(--muted);
+      }
+      a {
+        color: var(--link);
+      }
+      code {
+        padding: 0.1em 0.35em;
+        border-radius: 4px;
+        background: var(--code);
+        font-family: ui-monospace, monospace;
+        font-size: 0.9em;
+      }
+      pre {
+        overflow-x: auto;
+        margin: 0 0 1rem;
+        padding: 0.9rem 1rem;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--code);
+      }
+      pre code {
+        padding: 0;
+        background: none;
+      }
+      footer {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>logbox</h1>
+    <p class="lead">
+      Wraps a long-running command and pins a configurable info box to the bottom of the terminal.
+      Output scrolls above it, unaltered.
+    </p>
+
+    <img
+      src="https://raw.githubusercontent.com/enke-dev/logbox/main/logbox.gif"
+      alt="logbox demo"
+      width="100%"
+    >
+
+    <h2>Use directly</h2>
+    <p>With a <code>.logbox.json</code> in your project root:</p>
+    <pre><code>npx @enke.dev/logbox pnpm -r --parallel --stream dev</code></pre>
+
+    <p>Or define contents inline:</p>
+    <pre><code>npx @enke.dev/logbox -c '[["docs","https://localhost:5173"]]' -t 'dev servers' npm run dev</code></pre>
+
+    <h2>Install</h2>
+    <p>Either as dev dependency:</p>
+    <pre><code>npm i -D @enke.dev/logbox</code></pre>
+
+    <p>Or globally:</p>
+    <pre><code>npm i -g @enke.dev/logbox</code></pre>
+
+    <p>
+      Then run the command directly with either a <code>.logbox.json</code> or contents defined
+      inline:
+    </p>
+
+    <pre><code>logbox pnpm -r --parallel --stream dev
+logbox -c '[["docs","https://localhost:5173"]]' -t 'dev servers' npm run dev</code></pre>
+
+    <h2>Schema</h2>
+    <p>
+      The box content lives in <code>.logbox.json</code> (repo root or user home). Point your editor
+      at the published schema for completion and validation:
+    </p>
+    <pre><code>{
+  "$schema": "https://enke-dev.github.io/logbox/logbox.schema.json",
+  "title": "dev servers",
+  "content": [
+    ["docs", "https://localhost:5173"],
+    ["components", "https://localhost:5174"]
+  ]
+}</code></pre>
+    <footer>
+      <a href="https://github.com/enke-dev/logbox">GitHub</a> ·
+      <a href="https://www.npmjs.com/package/@enke.dev/logbox">npm</a> · MIT
+    </footer>
+  </body>
+</html>

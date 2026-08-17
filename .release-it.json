@@ -1,0 +1,20 @@
+{
+  "npm": {
+    "skipChecks": true,
+    "publish": true
+  },
+  "github": {
+    "release": true
+  },
+  "git": {
+    "commitMessage": "chore: release v${version}",
+    "pushArgs": ["--follow-tags"]
+  },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "infile": "CHANGELOG.md",
+      "header": "# @enke.dev/logbox",
+      "preset": "angular"
+    }
+  }
+}
