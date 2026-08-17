@@ -36,7 +36,7 @@ Typical use is a `package.json` script:
 }
 ```
 
-<img src="https://enke-dev.github.io/logbox/logbox.gif" alt="logbox demo" width="100%">
+<img src="https://enke-dev.github.io/logbox/logbox.gif" alt="logbox demo" width="100%" style="max-width: 456px">
 
 ## How it works
 
