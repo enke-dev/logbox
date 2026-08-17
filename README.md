@@ -6,31 +6,24 @@ wrapped command's output scrolls above it, unaltered — colors, spinners and al
 ```
 [dev:docs] vite v7.1.0 ready in 431 ms
 [dev:components] build started…
-╭─ dev servers ──────────────────────────────────────────────────────────────╮
-│ docs..............................................https://localhost:5173  │
-│ components (web)..................................https://localhost:5174  │
-│ components (react)................................https://localhost:5175  │
-╰────────────────────────────────────────────────────────────────────────────╯
+╭─ dev servers ────────────────────────────────────────────────────────────╮
+│ docs..............................................https://localhost:5173 │
+│ components (web)..................................https://localhost:5174 │
+│ components (react)................................https://localhost:5175 │
+╰──────────────────────────────────────────────────────────────────────────╯
 ```
 
 ## tl;dr
 
 ```sh
-# as a dev dependency
-npm i -D @enke.dev/logbox
-# or globally
-npm i -g @enke.dev/logbox
-
-# wrap whatever you already run
-logbox pnpm -r --parallel --stream dev
-```
-
-Or without installing:
-
-```sh
+# invoke directly
 npx @enke.dev/logbox pnpm -r --parallel --stream dev
 pnpm dlx @enke.dev/logbox pnpm -r --parallel --stream dev
 bunx --bun @enke.dev/logbox pnpm -r --parallel --stream dev
+
+# or install and run globally
+npm i -g @enke.dev/logbox
+logbox pnpm -r --parallel --stream dev
 ```
 
 Typical use is a `package.json` script:
@@ -43,11 +36,11 @@ Typical use is a `package.json` script:
 }
 ```
 
+<img src="https://enke-dev.github.io/logbox/logbox.gif" alt="logbox demo" width="100%">
+
 ## How it works
 
-The box lives in terminal lines that are reserved by shrinking the scroll region, so it is not part
-of the output stream: nothing scrolls it away, and nothing is rewritten or filtered on the way
-through. Redraws are coalesced, so a burst of output costs one render.
+The box lives in terminal lines that are reserved by shrinking the scroll region, so it is not part of the output stream: nothing scrolls it away, and nothing is rewritten or filtered on the way through. Redraws are coalesced, so a burst of output costs one render.
 
 Without a TTY (pipes, CI logs) there is nothing to pin the box to, so the content is printed once up
 front as a flat list and the child inherits stdio directly.
@@ -67,9 +60,8 @@ Content is an **array of rows**; each row is an **array of strings**:
 
 ### `.logbox.json`
 
-Looked up in the current directory, then every parent up to the filesystem root — so a file in the
-repo root is found from any nested cwd — and finally in the user home directory (`~/.logbox.json`)
-as a global fallback. The nearest file wins.
+Looked up in the current directory, then every parent up to the filesystem root — so a file in the repo root is found from any nested cwd — and finally in the user home directory (`~/.logbox.json`) as a global fallback.\
+The nearest file wins.
 
 Bare rows:
 
@@ -93,9 +85,7 @@ Or the object form, which adds a title:
 }
 ```
 
-The JSON schema is published with every release at
-**<https://enke-dev.github.io/logbox/logbox.schema.json>** — reference it via `$schema` for editor
-completion and validation.
+The JSON schema is published at **<https://enke-dev.github.io/logbox/logbox.schema.json>** — reference it via `$schema` for editor completion and validation.
 
 ### Inline
 
