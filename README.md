@@ -6,11 +6,11 @@ wrapped command's output scrolls above it, unaltered — colors, spinners and al
 ```
 [dev:docs] vite v7.1.0 ready in 431 ms
 [dev:components] build started…
-╭─ dev servers ────────────────────────────────────────────────────────────╮
-│ docs..............................................https://localhost:5173 │
-│ components (web)..................................https://localhost:5174 │
-│ components (react)................................https://localhost:5175 │
-╰──────────────────────────────────────────────────────────────────────────╯
+╭─ dev servers ──────────────────────────────────────────────────────╮
+│ docs........................................https://localhost:5173 │
+│ components (web)............................https://localhost:5174 │
+│ components (react)..........................https://localhost:5175 │
+╰────────────────────────────────────────────────────────────────────╯
 ```
 
 ## tl;dr
