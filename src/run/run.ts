@@ -43,12 +43,16 @@ export function runWithBox(command: string[], config: LogboxConfig): Promise<num
 
   const scrollBottom = (): number => Math.max(1, size().rows - height);
 
-  /** Paint the box into the reserved lines, then put the cursor back. */
+  /**
+   * Paint the box into the reserved lines, then put the cursor back. The scroll
+   * region is re-armed on every redraw: a child may reset the terminal (`RIS`),
+   * which drops the margins and would let the box scroll away.
+   */
   const drawBox = (): void => {
     const lines = renderBox({ title, rows, columns: size().columns });
     const top = Math.max(1, size().rows - lines.length + 1);
     const box = lines.map((line, index) => `${cursorTo(top + index)}${CLEAR_LINE}${line}`).join('');
-    stdout.write(`${SAVE_CURSOR}${box}${RESTORE_CURSOR}`);
+    stdout.write(`${SAVE_CURSOR}${setScrollRegion(1, scrollBottom())}${box}${RESTORE_CURSOR}`);
   };
 
   let scheduled: ReturnType<typeof setTimeout> | undefined;
