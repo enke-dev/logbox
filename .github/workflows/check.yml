@@ -5,6 +5,11 @@ on:
   pull_request:
     branches: [main]
   workflow_call:
+    inputs:
+      ref:
+        description: Git ref to check out and test (defaults to the triggering ref)
+        type: string
+        default: ''
 
 jobs:
   check:
