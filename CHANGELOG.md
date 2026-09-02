@@ -1,5 +1,7 @@
 # @enke.dev/logbox
 
+## [0.0.6](https://github.com/enke-dev/logbox/compare/0.0.5...0.0.6) (2026-09-02)
+
 ## [0.0.5](https://github.com/enke-dev/logbox/compare/0.0.4...0.0.5) (2026-08-25)
 
 ## [0.0.4](https://github.com/enke-dev/logbox/compare/0.0.3...0.0.4) (2026-08-19)
