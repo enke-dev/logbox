@@ -50,15 +50,15 @@
     "build": "bun build ./src/cli.ts --target=node --outfile dist/cli.mjs"
   },
   "devDependencies": {
-    "@enke.dev/lint": "0.13.13",
+    "@enke.dev/lint": "0.13.16",
     "@tsconfig/strictest": "2.0.8",
     "@types/bun": "1.4.2",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
-    "eslint": "10.10.0",
+    "eslint": "10.11.0",
     "jiti": "2.7.0",
     "npm-run-all2": "9.0.3",
-    "prettier": "3.9.6",
-    "tsx": "4.23.13",
+    "prettier": "3.9.9",
+    "tsx": "4.23.15",
     "typescript": "6.0.3"
   }
 }
