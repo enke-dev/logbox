@@ -1,6 +1,6 @@
 {
   "name": "@enke.dev/logbox",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "license": "MIT",
   "packageManager": "bun@1.4.4",
   "publishConfig": {
