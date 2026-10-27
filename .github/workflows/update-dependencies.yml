@@ -2,7 +2,7 @@ name: update dependencies
 
 on:
   schedule:
-    - cron: "0 6 * * 1" # every Monday at 06:00 UTC
+    - cron: '0 6 * * 1' # every Monday at 06:00 UTC
   workflow_dispatch: # also allow manual runs
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
       branch: ${{ steps.bump.outputs.branch }}
     steps:
       - id: bump
-        uses: enke-dev/bumper@5de4c962122120332e93b081515af4b31dae1988 # 0.13.2
+        uses: enke-dev/bumper@9d009eb3fd498bf8784cf2913bb1097e5250d792 # 0.15.0
         with:
           skip: github-actions # GITHUB_TOKEN can't push .github/workflows/ changes
           pr-labels: dependencies
